@@ -35,7 +35,7 @@ export default function(opt) {
             mem: process.memoryUsage(),
         };
     });
-
+    
     router.get('/api/tunnels/:id/status', async (ctx, next) => {
         const clientId = ctx.params.id;
         const client = manager.getClient(clientId);
@@ -43,20 +43,20 @@ export default function(opt) {
             ctx.throw(404);
             return;
         }
-
+        
         const stats = client.stats();
         ctx.body = {
             connected_sockets: stats.connectedSockets,
         };
     });
-
+    
     app.use(router.routes());
     app.use(router.allowedMethods());
 
     // root endpoint
     app.use(async (ctx, next) => {
         const path = ctx.request.path;
-
+        console.log('url--->', path);
         // skip anything not on the root path
         if (path !== '/') {
             await next();
@@ -106,7 +106,7 @@ export default function(opt) {
 
         debug('making new client with id %s', reqId);
         const info = await manager.newClient(reqId);
-
+        console.log('info after connection', info);
         const url = schema + '://' + info.id + '.' + ctx.request.host;
         info.url = url;
         ctx.body = info;
@@ -119,6 +119,7 @@ export default function(opt) {
 
     server.on('request', (req, res) => {
         // without a hostname, we won't know who the request is for
+        console.log('got req hostname ', hostname);
         const hostname = req.headers.host;
         if (!hostname) {
             res.statusCode = 400;
@@ -127,12 +128,16 @@ export default function(opt) {
         }
 
         const clientId = GetClientIdFromHostname(hostname);
+
+        console.log('got req clientId', clientId);
         if (!clientId) {
             appCallback(req, res);
             return;
         }
 
         const client = manager.getClient(clientId);
+
+        console.log('got req client', client);
         if (!client) {
             res.statusCode = 404;
             res.end('404');
