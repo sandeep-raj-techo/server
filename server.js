@@ -119,8 +119,8 @@ export default function(opt) {
 
     server.on('request', (req, res) => {
         // without a hostname, we won't know who the request is for
-        console.log('got req hostname ', hostname);
         const hostname = req.headers.host;
+        console.log('got req hostname ', hostname);
         if (!hostname) {
             res.statusCode = 400;
             res.end('Host header is required');
