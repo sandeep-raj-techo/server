@@ -56,7 +56,7 @@ export default function(opt) {
     // root endpoint
     app.use(async (ctx, next) => {
         const path = ctx.request.path;
-        console.log('url--->', path);
+       //  console.log('url--->', path);
         // skip anything not on the root path
         if (path !== '/') {
             await next();
@@ -107,7 +107,7 @@ export default function(opt) {
 
         debug('making new client with id %s', reqId);
         const info = await manager.newClient(reqId);
-        console.log('info after connection', info);
+       //  console.log('info after connection', info);
         const url = schema + '://' + info.id + '.' + ctx.request.host;
         info.url = url;
         ctx.body = info;
@@ -121,7 +121,7 @@ export default function(opt) {
     server.on('request', (req, res) => {
         // without a hostname, we won't know who the request is for
         const hostname = req.headers.host;
-        console.log('got req hostname ', hostname);
+       //  console.log('got req hostname ', hostname);
         if (!hostname) {
             res.statusCode = 400;
             res.end('Host header is required');
@@ -130,7 +130,7 @@ export default function(opt) {
 
         const clientId = GetClientIdFromHostname(hostname);
 
-        console.log('got req clientId', clientId);
+       //  console.log('got req clientId', clientId);
         if (!clientId) {
             appCallback(req, res);
             return;
@@ -138,7 +138,7 @@ export default function(opt) {
 
         const client = manager.getClient(clientId);
 
-        console.log('got req client', client);
+       //  console.log('got req client', client);
         if (!client) {
             res.statusCode = 404;
             res.end('404');
